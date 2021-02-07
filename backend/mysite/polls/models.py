@@ -19,5 +19,13 @@ class User(models.Model):
 
 
 class Doctors(models.Model):
+    phone = models.CharField(max_length=200, primary_key=True)
+    password = models.CharField(max_length=200,null=False)
     name = models.CharField(max_length=200)
     spec = models.IntegerField()
+    number = models.CharField(max_length=200)
+    online_pay = models.BooleanField()
+    experience_years = models.IntegerField(default=0)
+    address = models.CharField(max_length=1000,default="none")
+    week_days = models.TextField(max_length=1000)
+    

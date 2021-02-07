@@ -35,7 +35,7 @@ def detail(request, question_text):
         b.save()
         return HttpResponse("None")
 @csrf_exempt
-def userLogin(request):
+def userSignup(request):
     try:
         if request.method == 'POST':
             print('Raw Data: "%s"' % request.body)
@@ -55,7 +55,69 @@ def userLogin(request):
                 'state': True
                 }
 
-                return JsonResponse(responseData)
+                return HttpResponse("ok")
+            else:
+                return HttpResponse("wrong")
+
+    except:
+        return HttpResponse("wrong2")
+
+
+@csrf_exempt
+def userLogin(request):
+    try:
+        if request.method == 'POST':
+            print('Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            # print(str(myJson))
+            # for i in myJson:
+            #     print(str(i) +" " + str(myJson[i]))
+            # print(myJson['id'])
+            phone = myJson['phone']
+            password = myJson['password']
+            if User.objects.filter(phone=phone,password=password).exists():
+                return HttpResponse("ok")
+            else:
+                return HttpResponse("wrong")
+
+    except:
+        return HttpResponse("wrong2")
+
+
+@csrf_exempt
+def docLogin(request):
+    try:
+        if request.method == 'POST':
+            phone = myJson['phone']
+            password = myJson['password']
+            if Doctors.objects.filter(phone=phone,password=password).exists():
+                return HttpResponse("ok")
+            else:
+                return HttpResponse("wrong")
+    except:
+        return HttpResponse("wrong2")
+
+@csrf_exempt
+def docSignup(request):
+    try:
+        if request.method == 'POST':
+            print('Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            name = myJson['name']
+            phone = myJson['phone']
+            password = myJson['password']
+            spec = myJson['spec']
+            number = myJson['number']
+            online_pay = myJson['online_pay']
+            experience_years = myJson['experience_years']
+            address = myJson['address']
+            week_days = myJson['week_days']
+            
+            if not Doctors.objects.filter(phone=phone).exists():
+                newUser = Doctors(phone=phone, password=password,name=name,spec=spec,number=number,online_pay=online_pay
+                ,experience_years = experience_years,address=address,week_days=week_days)
+                newUser.save()
+                return HttpResponse("ok")
             else:
                 return HttpResponse("wrong")
 
