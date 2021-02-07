@@ -177,27 +177,55 @@ def editDoc(request):
 @csrf_exempt
 def SearchDoc(request,text):
     try:
-        print("shit")
-        data = Doctors.objects.filter(name__contains=text)
-        myList = []
-        print("why")
-        for i in range(len(data)):
-            myJson = {
-            'name' : data[i].name,
-            'phone' : data[i].phone,
-            'password' : data[i].password,
-            'spec' : data[i].spec,
-            'number' : data[i].number,
-            'online_pay' : data[i].online_pay,
-            'experience_years' : data[i].experience_years,
-            'address' : data[i].address,
-            'week_days' : data[i].week_days
-            }
-            myList.append(myJson)
-            print("hi")
-        result = {'result' : myList} 
-        return JsonResponse(result)
+        if text.startswith("name="):
+            print("shit")
+            text = text.replace("name=","")
+            data = Doctors.objects.filter(name__contains=text)
+            myList = []
+            print("why")
+            for i in range(len(data)):
+                myJson = {
+                'name' : data[i].name,
+                'phone' : data[i].phone,
+                'password' : data[i].password,
+                'spec' : data[i].spec,
+                'number' : data[i].number,
+                'online_pay' : data[i].online_pay,
+                'experience_years' : data[i].experience_years,
+                'address' : data[i].address,
+                'week_days' : data[i].week_days
+                }
+                myList.append(myJson)
+                print("hi")
+            result = {'result' : myList} 
+            return JsonResponse(result)
+
+        elif text.startswith("spec="):
+            print("shit")
+            text = text.replace("spec=","")
+            data = Doctors.objects.filter(spec__contains=text)
+            myList = []
+            print("why")
+            for i in range(len(data)):
+                myJson = {
+                'name' : data[i].name,
+                'phone' : data[i].phone,
+                'password' : data[i].password,
+                'spec' : data[i].spec,
+                'number' : data[i].number,
+                'online_pay' : data[i].online_pay,
+                'experience_years' : data[i].experience_years,
+                'address' : data[i].address,
+                'week_days' : data[i].week_days
+                }
+                myList.append(myJson)
+                print("hi")
+            result = {'result' : myList} 
+            return JsonResponse(result)
+        
     except:
         return HttpResponse("None")
+
+
 
 
