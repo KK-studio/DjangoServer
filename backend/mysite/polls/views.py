@@ -51,7 +51,11 @@ def userLogin(request):
             if not User.objects.filter(phone=phone).exists():
                 newUser = User(phone=phone, password=password,name=name)
                 newUser.save()
-                return HttpResponse("ok")#status=204
+                responseData = {
+                'state': True
+                }
+
+                return JsonResponse(responseData)
             else:
                 return HttpResponse("wrong")
 
