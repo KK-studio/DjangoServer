@@ -134,9 +134,9 @@ def editDoc(request):
             online_pay = myJson['online_pay']
             experience_years = myJson['experience_years']
             address = myJson['address']
-            week_days = myJson['week_days']
+            week_days = str(myJson['week_days'])
             
-            if not Doctors.objects.filter(phone=phone).exists():
+            if  Doctors.objects.filter(phone=phone).exists():
                 newUser = Doctors(phone=phone, password=password,name=name,spec=spec,number=number,online_pay=online_pay
                 ,experience_years = experience_years,address=address,week_days=week_days)
                 newUser.save()
@@ -149,23 +149,24 @@ def editDoc(request):
             password = myJson['password']
 
         
-        if Doctors.objects.filter(phone=phone,password=password).exists():
-            data = Doctors.objects.filter(phone=phone,password=password)
-            myJson = {
-            'name' : data[0].name,
-            'phone' : data[0].phone,
-            'password' : data[0].password,
-            'spec' : data[0].spec,
-            'number' : data[0].number,
-            'online_pay' : data[0].online_pay,
-            'experience_years' : data[0].experience_years,
-            'address' : data[0].address,
-            'week_days' : data[0].week_days,
-            'score' : data[i].total_scores_sum / data[i].scores_count
-            }
-            return JsonResponse(myJson)
-        else:
-            return HttpResponse("wrong")
+            if Doctors.objects.filter(phone=phone,password=password).exists():
+                data = Doctors.objects.filter(phone=phone,password=password)
+                myJson = {
+                'name' : data[0].name,
+                'phone' : data[0].phone,
+                'password' : data[0].password,
+                'spec' : data[0].spec,
+                'number' : data[0].number,
+                'online_pay' : data[0].online_pay,
+                'experience_years' : data[0].experience_years,
+                'address' : data[0].address,
+                'week_days' : data[0].week_days,
+                'score' : data[i].total_scores_sum / data[i].scores_count
+                }
+                return JsonResponse(myJson)
+            else:
+                return HttpResponse("wrong")
+        return HttpResponse("none")
 
     except:
         return HttpResponse("wrong2")
@@ -298,6 +299,27 @@ def addScore(request):
             Doctors.objects.filter(phone=phone)[0].total_scores_sum += score
             newScore.save()
             return HttpResponse("ok")
+
+    except:
+        return HttpResponse("wrong2")
+
+
+
+@csrf_exempt
+def editUser(request):
+    try:
+        if request.method == 'POST':
+            print('Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            name = myJson['name']
+            phone = myJson['phone']
+            password = myJson['password']
+        
+            if  Doctors.objects.filter(phone=phone).exists():
+                newUser = User(phone=phone, password=password,name=name)
+                newUser.save()
+                return HttpResponse("ok")
+        return HttpResponse("oops!")
 
     except:
         return HttpResponse("wrong2")
