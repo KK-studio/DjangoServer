@@ -11,3 +11,12 @@ class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     votes = models.IntegerField(default=0)
+
+class User(models.Model):
+    user_name = models.CharField(max_length=200, primary_key=True)
+    password = models.CharField(max_length=200)
+
+
+class Doctors(models.Model):
+    name = models.CharField(max_length=200)
+    spec = models.IntegerField()
