@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from django.utils import timezone
-from .models import Question,Doctors,User
+from .models import Question,Doctors,User,Comments
 from django.http import JsonResponse
 
 import json
@@ -160,7 +160,8 @@ def editDoc(request):
             'online_pay' : data[0].online_pay,
             'experience_years' : data[0].experience_years,
             'address' : data[0].address,
-            'week_days' : data[0].week_days
+            'week_days' : data[0].week_days,
+            'score' : data[i].total_scores_sum / data[i].scores_count
             }
             return JsonResponse(myJson)
         else:
@@ -193,7 +194,8 @@ def SearchDoc(request,text):
                 'online_pay' : data[i].online_pay,
                 'experience_years' : data[i].experience_years,
                 'address' : data[i].address,
-                'week_days' : data[i].week_days
+                'week_days' : data[i].week_days,
+                'score' : data[i].total_scores_sum / data[i].scores_count
                 }
                 myList.append(myJson)
                 print("hi")
@@ -216,7 +218,8 @@ def SearchDoc(request,text):
                 'online_pay' : data[i].online_pay,
                 'experience_years' : data[i].experience_years,
                 'address' : data[i].address,
-                'week_days' : data[i].week_days
+                'week_days' : data[i].week_days,
+                'score' : data[i].total_scores_sum / data[i].scores_count
                 }
                 myList.append(myJson)
                 print("hi")
@@ -229,3 +232,72 @@ def SearchDoc(request,text):
 
 
 
+
+@csrf_exempt
+def getDoc(request):
+    try:
+        print('GET Raw Data: "%s"' % request.body)
+        myJson = json.loads(request.body)
+        phone = myJson['phone']
+        if Doctors.objects.filter(phone=phone).exists():
+            data = Doctors.objects.filter(phone=phone)
+            comments = []
+            data2 = Comments.objects.filter(doc_phone=phone)
+            for i in range(len(data2)):
+                newJson = {
+                    'name':data2[i].name,
+                    'comment':data2[i].comment
+                }
+                comments.append(newJson)
+            myJson = {
+            'name' : data[0].name,
+            'phone' : data[0].phone,
+            'password' : data[0].password,
+            'spec' : data[0].spec,
+            'number' : data[0].number,
+            'online_pay' : data[0].online_pay,
+            'experience_years' : data[0].experience_years,
+            'address' : data[0].address,
+            'week_days' : data[0].week_days,
+            'score' : data[0].total_scores_sum / data[0].scores_count,
+            'comments' : comments
+            }
+            return JsonResponse(myJson)
+
+    except:
+        return HttpResponse("wrong2")
+
+
+
+@csrf_exempt
+def addComment(request):
+    try:
+        print('GET Raw Data: "%s"' % request.body)
+        myJson = json.loads(request.body)
+        phone = myJson['phone']
+        name = myJson['name']
+        comment = myJson['comment']
+        if Doctors.objects.filter(phone=phone).exists():
+            Doctors.objects.filter(phone=phone)[0].last_Comment = comment
+            newCooment = Comments(doc_phone=phone,name = name,comment=comment)
+            newCooment.save()
+            return HttpResponse("ok")
+
+    except:
+        return HttpResponse("wrong2")
+
+@csrf_exempt
+def addScore(request):
+    try:
+        print('GET Raw Data: "%s"' % request.body)
+        myJson = json.loads(request.body)
+        phone = myJson['phone']
+        score = myJson['score']
+        if Doctors.objects.filter(phone=phone).exists():
+            Doctors.objects.filter(phone=phone)[0].scores_count += 1
+            Doctors.objects.filter(phone=phone)[0].total_scores_sum += score
+            newScore.save()
+            return HttpResponse("ok")
+
+    except:
+        return HttpResponse("wrong2")

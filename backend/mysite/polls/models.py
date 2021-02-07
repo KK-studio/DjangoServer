@@ -28,10 +28,13 @@ class Doctors(models.Model):
     experience_years = models.IntegerField(default=0)
     address = models.CharField(max_length=1000,default="none")
     week_days = models.TextField(max_length=1000,default="[false,false,false,false,false,false,false]")
+    total_scores_sum = models.IntegerField(default=0)
+    scores_count = models.IntegerField(default=0)
+    last_Comment = models.TextField(max_length=500,default="no comments!")
 
 
 class Comments(models.Model):
     comment = models.CharField(max_length=500,null=False)
     doc_phone = models.ForeignKey(Doctors, on_delete=models.CASCADE)
-    uder_phone = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=500,null=False) 
     
