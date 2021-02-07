@@ -22,10 +22,16 @@ class Doctors(models.Model):
     phone = models.CharField(max_length=200, primary_key=True)
     password = models.CharField(max_length=200,null=False)
     name = models.CharField(max_length=200)
-    spec = models.IntegerField()
+    spec = models.IntegerField(default=0)
     number = models.CharField(max_length=200)
-    online_pay = models.BooleanField()
+    online_pay = models.BooleanField(default=False)
     experience_years = models.IntegerField(default=0)
     address = models.CharField(max_length=1000,default="none")
-    week_days = models.TextField(max_length=1000)
+    week_days = models.TextField(max_length=1000,default="[false,false,false,false,false,false,false]")
+
+
+class Comments(models.Model):
+    comment = models.CharField(max_length=500,null=False)
+    doc_phone = models.ForeignKey(Doctors, on_delete=models.CASCADE)
+    uder_phone = models.ForeignKey(User, on_delete=models.CASCADE)
     

@@ -9,4 +9,6 @@ urlpatterns = [
     path('user/login', views.userLogin, name='userLogin'),
     path('user/docLogin', views.docLogin, name='docLogin'),
     path('user/docSignup', views.docSignup, name='docSignup'),
+    path('user/editDoc', views.editDoc, name='editDoc'),
+    path('user/SearchDoc/<str:text>/', views.SearchDoc, name='SearchDoc'),
 ]

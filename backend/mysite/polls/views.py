@@ -97,8 +97,31 @@ def docLogin(request):
     except:
         return HttpResponse("wrong2")
 
+
+
 @csrf_exempt
 def docSignup(request):
+    try:
+        if request.method == 'POST':
+            print('Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            name = myJson['name']
+            phone = myJson['phone']
+            password = myJson['password']
+            
+            if not Doctors.objects.filter(phone=phone).exists():
+                newUser = Doctors(phone=phone, password=password,name=name)
+                newUser.save()
+                return HttpResponse("ok")
+            else:
+                return HttpResponse("wrong")
+
+    except:
+        return HttpResponse("wrong2")
+
+
+@csrf_exempt
+def editDoc(request):
     try:
         if request.method == 'POST':
             print('Raw Data: "%s"' % request.body)
@@ -118,8 +141,63 @@ def docSignup(request):
                 ,experience_years = experience_years,address=address,week_days=week_days)
                 newUser.save()
                 return HttpResponse("ok")
-            else:
-                return HttpResponse("wrong")
+            
+        if request.method == 'GET':
+            print('GET Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            phone = myJson['phone']
+            password = myJson['password']
+
+        
+        if Doctors.objects.filter(phone=phone,password=password).exists():
+            data = Doctors.objects.filter(phone=phone,password=password)
+            myJson = {
+            'name' : data[0].name,
+            'phone' : data[0].phone,
+            'password' : data[0].password,
+            'spec' : data[0].spec,
+            'number' : data[0].number,
+            'online_pay' : data[0].online_pay,
+            'experience_years' : data[0].experience_years,
+            'address' : data[0].address,
+            'week_days' : data[0].week_days
+            }
+            return JsonResponse(myJson)
+        else:
+            return HttpResponse("wrong")
 
     except:
         return HttpResponse("wrong2")
+
+
+
+
+
+
+@csrf_exempt
+def SearchDoc(request,text):
+    try:
+        print("shit")
+        data = Doctors.objects.filter(name__contains=text)
+        myList = []
+        print("why")
+        for i in range(len(data)):
+            myJson = {
+            'name' : data[i].name,
+            'phone' : data[i].phone,
+            'password' : data[i].password,
+            'spec' : data[i].spec,
+            'number' : data[i].number,
+            'online_pay' : data[i].online_pay,
+            'experience_years' : data[i].experience_years,
+            'address' : data[i].address,
+            'week_days' : data[i].week_days
+            }
+            myList.append(myJson)
+            print("hi")
+        result = {'result' : myList} 
+        return JsonResponse(result)
+    except:
+        return HttpResponse("None")
+
+
