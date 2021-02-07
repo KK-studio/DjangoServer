@@ -315,10 +315,50 @@ def editUser(request):
             phone = myJson['phone']
             password = myJson['password']
         
-            if  Doctors.objects.filter(phone=phone).exists():
+            if  User.objects.filter(phone=phone).exists():
                 newUser = User(phone=phone, password=password,name=name)
                 newUser.save()
                 return HttpResponse("ok")
+
+        if request.method == 'GET':
+            print('GET Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            phone = myJson['phone']
+            password = myJson['password']
+
+        
+            if User.objects.filter(phone=phone,password=password).exists():
+                data = User.objects.filter(phone=phone,password=password)
+                myJson = {
+                'name' : data[0].name,
+                'phone' : data[0].phone,
+                'password' : data[0].password,
+                }
+                return JsonResponse(myJson)
+        return HttpResponse("oops!")
+
+    except:
+        return HttpResponse("wrong2")
+
+
+
+@csrf_exempt
+def getUser(request):
+    try:
+        if request.method == 'GET':
+            print('GET Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            phone = myJson['phone']
+
+        
+            if User.objects.filter(phone=phone).exists():
+                data = User.objects.filter(phone=phone)
+                myJson = {
+                'name' : data[0].name,
+                'phone' : data[0].phone,
+                'password' : data[0].password,
+                }
+                return JsonResponse(myJson)
         return HttpResponse("oops!")
 
     except:
