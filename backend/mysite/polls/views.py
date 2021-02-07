@@ -36,12 +36,24 @@ def detail(request, question_text):
         return HttpResponse("None")
 @csrf_exempt
 def userLogin(request):
-    # if request.is_ajax():
-    if request.method == 'POST':
-        print('Raw Data: "%s"' % request.body)
-        myJson = json.loads(request.body)
-        print(str(myJson))
-        for i in myJson:
-            print(str(i) +" " + str(myJson[i]))
-        print(myJson['id'])
-    return HttpResponse("ok")
+    try:
+        if request.method == 'POST':
+            print('Raw Data: "%s"' % request.body)
+            myJson = json.loads(request.body)
+            # print(str(myJson))
+            # for i in myJson:
+            #     print(str(i) +" " + str(myJson[i]))
+            # print(myJson['id'])
+            print("why")
+            phone = myJson['phone']
+            password = myJson['password']
+            name = myJson['name']
+            if not User.objects.filter(phone=phone).exists():
+                newUser = User(phone=phone, password=password,name=name)
+                newUser.save()
+                return HttpResponse("ok")#status=204
+            else:
+                return HttpResponse("wrong")
+
+    except:
+        return HttpResponse("wrong2")

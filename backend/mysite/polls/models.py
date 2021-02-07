@@ -13,8 +13,9 @@ class Choice(models.Model):
     votes = models.IntegerField(default=0)
 
 class User(models.Model):
-    user_name = models.CharField(max_length=200, primary_key=True)
+    phone = models.CharField(max_length=200, primary_key=True)
     password = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
 
 
 class Doctors(models.Model):
