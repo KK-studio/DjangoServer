@@ -245,11 +245,11 @@ def SearchDoc(request,text):
 
 
 @csrf_exempt
-def getDoc(request):
+def getDoc(request,text):
     try:
         print('GET Raw Data: "%s"' % request.body)
         myJson = json.loads(request.body)
-        phone = myJson['phone']
+        phone = text
         if Doctors.objects.filter(phone=phone).exists():
             data = Doctors.objects.filter(phone=phone)
             comments = []
