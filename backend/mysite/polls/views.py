@@ -177,65 +177,46 @@ def editDoc(request):
 
 
 @csrf_exempt
-def SearchDoc(request,text):
+def SearchDoc(request):
     try:
-        if text.startswith("name="):
-            print("shit")
-            text = text.replace("name=","")
-            data = Doctors.objects.filter(name__contains=text)
-            myList = []
-            print("why")
-            for i in range(len(data)):
-                myJson = {
-                'name' : data[i].name,
-                'phone' : data[i].phone,
-                'password' : data[i].password,
-                'spec' : data[i].spec,
-                'number' : data[i].number,
-                'online_pay' : data[i].online_pay,
-                'experience_years' : data[i].experience_years,
-                'address' : data[i].address,
-                'week_days' : data[i].week_days,
-                'last_Comment' : data[i].last_Comment,
-                'scores_count' : data[i].scores_count,
-                }
-                if data[i].scores_count != 0:
-                    myJson['score'] = data[i].total_scores_sum / data[i].scores_count
-                else:
-                    myJson['score'] = 0
-                myList.append(myJson)
-                print("hi")
-            result = {'result' : myList} 
-            return JsonResponse(result)
+        print('Raw Data: "%s"' % request.body)
+        myJson = json.loads(request.body)
+        name = myJson['name']
+        check = Doctors.objects
+        if (name != None or name !=''):
+            check = Doctors.objects.filter(name__contains=name)
+        
+        specs = myJson['specs']
+        data = []
+        for i in range(len(specs)):
+            if specs[i] is True:
+                data.append(check.filter(spec=i))
+        if len(data) == 0:
+            data =check
 
-        elif text.startswith("spec="):
-            print("shit")
-            text = text.replace("spec=","")
-            data = Doctors.objects.filter(spec__contains=text)
-            myList = []
-            print("why")
-            for i in range(len(data)):
-                myJson = {
-                'name' : data[i].name,
-                'phone' : data[i].phone,
-                'password' : data[i].password,
-                'spec' : data[i].spec,
-                'number' : data[i].number,
-                'online_pay' : data[i].online_pay,
-                'experience_years' : data[i].experience_years,
-                'address' : data[i].address,
-                'week_days' : data[i].week_days,
-                'last_Comment' : data[i].last_Comment,
-                'scores_count' : data[i].scores_count,
-                }
-                if data[i].scores_count != 0:
-                    myJson['score'] = data[i].total_scores_sum / data[i].scores_count
-                else:
-                    myJson['score'] = 0
-                myList.append(myJson)
-                print("hi")
-            result = {'result' : myList} 
-            return JsonResponse(result)
+        myList = []
+        print("why")
+        for i in range(len(data)):
+            myJson = {
+            'name' : data[i].name,
+            'phone' : data[i].phone,
+            'spec' : data[i].spec,
+            'number' : data[i].number,
+            'online_pay' : data[i].online_pay,
+            'experience_years' : data[i].experience_years,
+            'address' : data[i].address,
+            'week_days' : data[i].week_days,
+            'last_Comment' : data[i].last_Comment,
+            'scores_count' : data[i].scores_count,
+            }
+            if data[i].scores_count != 0:
+                myJson['score'] = data[i].total_scores_sum / data[i].scores_count
+            else:
+                myJson['score'] = 0
+            myList.append(myJson)
+            print("hi")
+        result = {'result' : myList} 
+        return JsonResponse(result)
         
     except:
         return HttpResponse("None")
