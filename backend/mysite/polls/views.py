@@ -186,6 +186,7 @@ def SearchDoc(request):
         if (name != None or name !=''):
             check = Doctors.objects.filter(name__contains=name)
         
+        print(check)
         specs = myJson['specs']
         data = []
         for i in range(len(specs)):
@@ -195,26 +196,27 @@ def SearchDoc(request):
             data =check
 
         myList = []
-        print("why")
+        print("why" + str(data))
         for i in range(len(data)):
-            myJson = {
-            'name' : data[i].name,
-            'phone' : data[i].phone,
-            'spec' : data[i].spec,
-            'number' : data[i].number,
-            'online_pay' : data[i].online_pay,
-            'experience_years' : data[i].experience_years,
-            'address' : data[i].address,
-            'week_days' : data[i].week_days,
-            'last_Comment' : data[i].last_Comment,
-            'scores_count' : data[i].scores_count,
-            }
-            if data[i].scores_count != 0:
-                myJson['score'] = data[i].total_scores_sum / data[i].scores_count
-            else:
-                myJson['score'] = 0
-            myList.append(myJson)
-            print("hi")
+            for j in range(len(data[i])):
+                myJson = {
+                'name' : data[i][j].name,
+                'phone' : data[i][j].phone,
+                'spec' : data[i][j].spec,
+                'number' : data[i][j].number,
+                'online_pay' : data[i][j].online_pay,
+                'experience_years' : data[i][j].experience_years,
+                'address' : data[i][j].address,
+                'week_days' : data[i][j].week_days,
+                'last_Comment' : data[i][j].last_Comment,
+                'scores_count' : data[i][j].scores_count,
+                }
+                if data[i][j].scores_count != 0:
+                    myJson['score'] = data[i][j].total_scores_sum / data[i][j].scores_count
+                else:
+                    myJson['score'] = 0
+                myList.append(myJson)
+                print("hi")
         result = {'result' : myList} 
         return JsonResponse(result)
         
