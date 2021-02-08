@@ -196,8 +196,13 @@ def SearchDoc(request,text):
                 'experience_years' : data[i].experience_years,
                 'address' : data[i].address,
                 'week_days' : data[i].week_days,
-                'score' : data[i].total_scores_sum / data[i].scores_count
+                'last_Comment' : data[i].last_Comment,
+                'scores_count' : data[i].scores_count,
                 }
+                if data[i].scores_count != 0:
+                    myJson['score'] = data[i].total_scores_sum / data[i].scores_count
+                else:
+                    myJson['score'] = 0
                 myList.append(myJson)
                 print("hi")
             result = {'result' : myList} 
@@ -221,9 +226,12 @@ def SearchDoc(request,text):
                 'address' : data[i].address,
                 'week_days' : data[i].week_days,
                 'last_Comment' : data[i].last_Comment,
-                'score' : data[i].total_scores_sum / data[i].scores_count,
                 'scores_count' : data[i].scores_count,
                 }
+                if data[i].scores_count != 0:
+                    myJson['score'] = data[i].total_scores_sum / data[i].scores_count
+                else:
+                    myJson['score'] = 0
                 myList.append(myJson)
                 print("hi")
             result = {'result' : myList} 
@@ -253,18 +261,23 @@ def getDoc(request):
                 }
                 comments.append(newJson)
             myJson = {
-            'name' : data[0].name,
-            'phone' : data[0].phone,
-            'password' : data[0].password,
-            'spec' : data[0].spec,
-            'number' : data[0].number,
-            'online_pay' : data[0].online_pay,
-            'experience_years' : data[0].experience_years,
-            'address' : data[0].address,
-            'week_days' : data[0].week_days,
-            'score' : data[0].total_scores_sum / data[0].scores_count,
+            'name' : data[i].name,
+            'phone' : data[i].phone,
+            'password' : data[i].password,
+            'spec' : data[i].spec,
+            'number' : data[i].number,
+            'online_pay' : data[i].online_pay,
+            'experience_years' : data[i].experience_years,
+            'address' : data[i].address,
+            'week_days' : data[i].week_days,
+            'last_Comment' : data[i].last_Comment,
+            'scores_count' : data[i].scores_count,
             'comments' : comments
             }
+            if data[i].scores_count != 0:
+                myJson['score'] = data[i].total_scores_sum / data[i].scores_count
+            else:
+                myJson['score'] = 0
             return JsonResponse(myJson)
 
     except:
