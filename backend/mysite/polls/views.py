@@ -220,7 +220,9 @@ def SearchDoc(request,text):
                 'experience_years' : data[i].experience_years,
                 'address' : data[i].address,
                 'week_days' : data[i].week_days,
-                'score' : data[i].total_scores_sum / data[i].scores_count
+                'last_Comment' : data[i].last_Comment,
+                'score' : data[i].total_scores_sum / data[i].scores_count,
+                'scores_count' : data[i].scores_count,
                 }
                 myList.append(myJson)
                 print("hi")
@@ -343,12 +345,12 @@ def editUser(request):
 
 
 @csrf_exempt
-def getUser(request):
+def getUser(request,text):
     try:
         if request.method == 'GET':
             print('GET Raw Data: "%s"' % request.body)
-            myJson = json.loads(request.body)
-            phone = myJson['phone']
+            # myJson = json.loads(request.body)
+            phone = text
 
         
             if User.objects.filter(phone=phone).exists():
