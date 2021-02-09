@@ -193,7 +193,7 @@ def SearchDoc(request):
             if specs[i] is True:
                 data.append(check.filter(spec=i))
         if len(data) == 0:
-            data =check
+            data.append(check)
 
         myList = []
         print("why" + str(data))
@@ -274,33 +274,24 @@ def addComment(request):
     try:
         print('GET Raw Data: "%s"' % request.body)
         myJson = json.loads(request.body)
+        doc_phone = myJson['doc_phone']
         phone = myJson['phone']
-        name = myJson['name']
         comment = myJson['comment']
-        if Doctors.objects.filter(phone=phone).exists():
-            Doctors.objects.filter(phone=phone)[0].last_Comment = comment
-            newCooment = Comments(doc_phone=phone,name = name,comment=comment)
-            newCooment.save()
-            return HttpResponse("ok")
-
-    except:
-        return HttpResponse("wrong2")
-
-@csrf_exempt
-def addScore(request):
-    try:
-        print('GET Raw Data: "%s"' % request.body)
-        myJson = json.loads(request.body)
-        phone = myJson['phone']
         score = myJson['score']
-        if Doctors.objects.filter(phone=phone).exists():
-            Doctors.objects.filter(phone=phone)[0].scores_count += 1
-            Doctors.objects.filter(phone=phone)[0].total_scores_sum += score
-            newScore.save()
-            return HttpResponse("ok")
+        if User.objects.filter(phone=phone).exists():
+            if Doctors.objects.filter(doc_phone=phone).exists():
+                name = User.objects.filter(phone=phone).name
+                newCooment = Comments(doc_phone=doc_phone,name = name,comment=comment,score=score)
+                Doctors.objects.filter(phone=doc_phone)[0].last_Comment = comment
+                Doctors.objects.filter(phone=doc_phone)[0].scores_count += 1
+                Doctors.objects.filter(phone=doc_phone)[0].total_scores_sum += score
+                newCooment.save()
+                return HttpResponse("ok")
+        return HttpResponse("None")
 
     except:
         return HttpResponse("wrong2")
+
 
 
 

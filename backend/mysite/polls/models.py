@@ -37,4 +37,5 @@ class Comments(models.Model):
     comment = models.CharField(max_length=500,null=False)
     doc_phone = models.ForeignKey(Doctors, on_delete=models.CASCADE)
     name = models.CharField(max_length=500,null=False) 
+    score = models.IntegerField(default=0) 
     

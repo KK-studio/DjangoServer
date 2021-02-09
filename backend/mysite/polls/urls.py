@@ -14,6 +14,5 @@ urlpatterns = [
     path('user/getDoc/<str:text>/', views.getDoc, name='getDoc'),
     path('user/getUser/<str:text>/', views.getUser, name='getUser'),
     path('user/addComment', views.addComment, name='addComment'),
-    path('user/addScore', views.addScore, name='addScore'),
     path('user/editUser', views.editUser, name='editUser'),
 ]
