@@ -241,7 +241,8 @@ def getDoc(request,text):
                 for i in range(len(data2)):
                     newJson = {
                         'name':data2[i].name,
-                        'comment':data2[i].comment
+                        'comment':data2[i].comment,
+                        'score' : data2[i].score
                     }
                     comments.append(newJson)
             myJson = {
@@ -284,18 +285,28 @@ def addComment(request):
                 
                 name = User.objects.filter(phone=phone)[0].name
                 doc = Doctors.objects.filter(phone=doc_phone)[0]
-                newCooment = Comments(doc_phone=doc,name = "ali",comment="Dassda",score=3)
+                newCooment = Comments(doc_phone=doc,name = name,comment=comment,score=score)
                 doc.last_Comment = comment
                 doc.scores_count += 1
                 doc.total_scores_sum += score
                 newCooment.save()
+                data2 = Comments.objects.filter(doc_phone=doc)
+                comments = []
+                for i in range(len(data2)):
+                    newJson = {
+                        'name':data2[i].name,
+                        'comment':data2[i].comment,
+                        'score' : data2[i].score
+                    }
+                    comments.append(newJson)
                 # myJson = {
                 # 'name' : data[0].name,
                 # 'phone' : data[0].phone,
                 # 'password' : data[0].password,
                 # }
                 # return JsonResponse(myJson)
-                return HttpResponse("ok")
+                result = {'comments':comments}
+                return JsonResponse(result)
         return HttpResponse("None")
 
     except:
