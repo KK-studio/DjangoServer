@@ -279,13 +279,22 @@ def addComment(request):
         comment = myJson['comment']
         score = myJson['score']
         if User.objects.filter(phone=phone).exists():
-            if Doctors.objects.filter(doc_phone=phone).exists():
-                name = User.objects.filter(phone=phone).name
-                newCooment = Comments(doc_phone=doc_phone,name = name,comment=comment,score=score)
-                Doctors.objects.filter(phone=doc_phone)[0].last_Comment = comment
-                Doctors.objects.filter(phone=doc_phone)[0].scores_count += 1
-                Doctors.objects.filter(phone=doc_phone)[0].total_scores_sum += score
+            print("why")
+            if Doctors.objects.filter(phone=doc_phone).exists():
+                
+                name = User.objects.filter(phone=phone)[0].name
+                doc = Doctors.objects.filter(phone=doc_phone)[0]
+                newCooment = Comments(doc_phone=doc,name = "ali",comment="Dassda",score=3)
+                doc.last_Comment = comment
+                doc.scores_count += 1
+                doc.total_scores_sum += score
                 newCooment.save()
+                # myJson = {
+                # 'name' : data[0].name,
+                # 'phone' : data[0].phone,
+                # 'password' : data[0].password,
+                # }
+                # return JsonResponse(myJson)
                 return HttpResponse("ok")
         return HttpResponse("None")
 
