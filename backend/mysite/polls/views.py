@@ -199,6 +199,13 @@ def SearchDoc(request):
         print("why" + str(data))
         for i in range(len(data)):
             for j in range(len(data[i])):
+                weeks = []
+                temp = data[i][j].week_days.split(",")
+                for z in temp:
+                    if z.__contains__("True"):
+                        weeks.append(True)
+                    else:
+                        weeks.append(False)
                 myJson = {
                 'name' : data[i][j].name,
                 'phone' : data[i][j].phone,
@@ -207,10 +214,11 @@ def SearchDoc(request):
                 'online_pay' : data[i][j].online_pay,
                 'experience_years' : data[i][j].experience_years,
                 'address' : data[i][j].address,
-                'week_days' : data[i][j].week_days,
+                'week_days' : weeks,
                 'last_Comment' : data[i][j].last_Comment,
                 'scores_count' : data[i][j].scores_count,
                 }
+
                 if data[i][j].scores_count != 0:
                     myJson['score'] = data[i][j].total_scores_sum / data[i][j].scores_count
                 else:
@@ -245,6 +253,14 @@ def getDoc(request,text):
                         'score' : data2[i].score
                     }
                     comments.append(newJson)
+
+            weeks = []
+            temp = data[0].week_days.split(",")
+            for s in temp:
+                if s.__contains__("True"):
+                    weeks.append(True)
+                else:
+                    weeks.append(False)
             myJson = {
             'name' : data[0].name,
             'phone' : data[0].phone,
@@ -254,11 +270,11 @@ def getDoc(request,text):
             'online_pay' : data[0].online_pay,
             'experience_years' : data[0].experience_years,
             'address' : data[0].address,
-            'week_days' : data[0].week_days,
             'last_Comment' : data[0].last_Comment,
             'scores_count' : data[0].scores_count,
+            'week_days' : weeks,
             'comments' : comments
-            }
+            }            
             if data[0].scores_count != 0:
                 myJson['score'] = data[0].total_scores_sum / data[0].scores_count
             else:
@@ -289,6 +305,7 @@ def addComment(request):
                 doc.last_Comment = comment
                 doc.scores_count += 1
                 doc.total_scores_sum += score
+                doc.save()
                 newCooment.save()
                 data2 = Comments.objects.filter(doc_phone=doc)
                 comments = []
